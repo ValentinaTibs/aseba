@@ -48,6 +48,7 @@ public:
     bool saveFile(bool as = false);
     void openFile();
     bool newFile();
+    void exportProgram();
     QString openedFileName() const;
 
 public Q_SLOTS:

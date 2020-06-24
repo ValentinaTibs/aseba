@@ -172,11 +172,48 @@ void aseba_node::compile_program(fb::ProgrammingLanguage language, const std::st
 
     Aseba::BytecodeVector bytecode;
     auto result = do_compile_program(compiler, defs, language, program, bytecode);
+
     if(!result)
         boost::asio::post(m_io_ctx.get_executor(), std::bind(std::move(cb), result.error(), compilation_result{}));
     else
         boost::asio::post(m_io_ctx.get_executor(),
                           std::bind(std::move(cb), boost::system::error_code{}, result.value()));
+}
+
+void aseba_node::compile_and_save(fb::ProgrammingLanguage language, const std::string& program,
+                                          compilation_callback&& cb) {
+    m_breakpoints.clear();
+    cancel_pending_step_request();
+    cancel_pending_breakpoint_request();
+    Aseba::Compiler compiler;
+    Aseba::CommonDefinitions defs = endpoint()->aseba_compiler_definitions();
+
+    compiler.setTargetDescription(&m_description);
+    compiler.setCommonDefinitions(&defs);
+    auto result = do_compile_program(compiler, defs, language, program, m_bytecode);
+    if(!result) {
+        cb(result.error(), {});
+        return;
+    }
+
+        
+    FILE* fp = fopen("/Users/vale/Desktop/compile_save","w+");
+    auto data_buff = std::vector<uint16_t>(m_bytecode.begin(), m_bytecode.end());
+    fwrite(data_buff.data(),sizeof(uint16_t),data_buff.size(),fp);
+    fclose(fp);
+
+    std::vector<std::shared_ptr<Aseba::Message>> messages;
+    Aseba::sendBytecode(messages, native_id(), std::vector<uint16_t>(m_bytecode.begin(), m_bytecode.end()));
+    reset_known_variables(*compiler.getVariablesMap());
+    write_messages(std::move(messages),
+                   [that = shared_from_this(), cb = std::move(cb), result](boost::system::error_code ec) {
+                       if(ec)
+                           cb(ec, result.value());
+                       else
+                           that->m_callbacks_pending_execution_state_change.push(std::bind(cb, ec, result.value()));
+                   });
+
+    m_variables_changed_signal(shared_from_this(), this->variables(), std::chrono::system_clock::now());
 }
 
 void aseba_node::compile_and_send_program(fb::ProgrammingLanguage language, const std::string& program,
@@ -194,6 +231,7 @@ void aseba_node::compile_and_send_program(fb::ProgrammingLanguage language, cons
         cb(result.error(), {});
         return;
     }
+
     std::vector<std::shared_ptr<Aseba::Message>> messages;
     Aseba::sendBytecode(messages, native_id(), std::vector<uint16_t>(m_bytecode.begin(), m_bytecode.end()));
     reset_known_variables(*compiler.getVariablesMap());

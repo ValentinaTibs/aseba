@@ -514,8 +514,24 @@ auto ThymioDeviceManagerClientEndpoint::send_code(const ThymioNode& node, const 
     auto uuidOffset = serialize_uuid(builder, node.uuid());
     auto codedOffset = builder.CreateString(code.data(), code.size());
     write(wrap_fb(builder, fb::CreateCompileAndLoadCodeOnVM(builder, r.id(), uuidOffset, language, codedOffset, opts)));
+    
+    return r;
+
+}
+
+auto ThymioDeviceManagerClientEndpoint::save_code(const ThymioNode& node, const QByteArray& code,
+                                                  fb::ProgrammingLanguage language, fb::CompilationOptions opts)
+    -> CompilationRequest {
+
+    CompilationRequest r = prepare_request<CompilationRequest>();
+    flatbuffers::FlatBufferBuilder builder;
+    auto uuidOffset = serialize_uuid(builder, node.uuid());
+    auto codedOffset = builder.CreateString(code.data(), code.size());
+    write(wrap_fb(builder, fb::CreateCompileAndSave(builder, r.id(), uuidOffset, language, codedOffset, opts)));
+    
     return r;
 }
+
 
 Request ThymioDeviceManagerClientEndpoint::send_aesl(const ThymioGroup& group, const QByteArray& code) {
     auto r = prepare_request<Request>();
@@ -525,6 +541,7 @@ Request ThymioDeviceManagerClientEndpoint::send_aesl(const ThymioGroup& group, c
     write(wrap_fb(
         builder,
         fb::CreateCompileAndLoadCodeOnVM(builder, r.id(), uuidOffset, fb::ProgrammingLanguage::Aesl, codedOffset)));
+
     return r;
 }
 

@@ -100,6 +100,7 @@ namespace ThymioVPL {
         void processHighlightChange();
         void onEventsReceived(const mobsya::ThymioNode::EventMap& variables);
         void onDeviceReadyChanged(bool ready);
+        void exportCode();
 
     private:
         void clearUndo();
@@ -148,6 +149,7 @@ namespace ThymioVPL {
         QPushButton* advancedButton;
         QPushButton* helpButton;
         QPushButton* snapshotButton;
+        QPushButton* exportButton;
         QFrame* firstSeparator;
         QFrame* secondSeparator;
         QSpacerItem* spacer1;

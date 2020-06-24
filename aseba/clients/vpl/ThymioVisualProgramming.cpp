@@ -194,6 +194,13 @@ namespace ThymioVPL {
         snapshotButton->setStyleSheet("QPushButton:pressed { border: 1px solid white }");
         toolLayout->addWidget(snapshotButton, 1, 16);
 
+        exportButton = new QPushButton();
+        exportButton->setIcon(QIcon(":/images/icons/export.svgz"));
+        exportButton->setToolTip(tr("Export"));
+        exportButton->setFlat(true);
+        exportButton->setStyleSheet("QPushButton:pressed { border: 1px solid white }");
+        toolLayout->addWidget(exportButton, 1, 16);
+
         connect(newButton, SIGNAL(clicked()), this, SLOT(newFile()));
         connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));
         connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
@@ -206,6 +213,7 @@ namespace ThymioVPL {
         connect(advancedButton, SIGNAL(clicked()), this, SLOT(toggleAdvancedMode()));
         connect(helpButton, SIGNAL(clicked()), this, SLOT(openHelp()));
         connect(snapshotButton, SIGNAL(clicked()), this, SLOT(saveSnapshot()));
+        connect(exportButton, SIGNAL(clicked()), this, SLOT(exportCode()));
 
         horizontalLayout = new QHBoxLayout();
         mainLayout->addLayout(horizontalLayout);
@@ -524,6 +532,13 @@ namespace ThymioVPL {
         if(runButton->isEnabled()) {
             m_app->loadAndRun();
             stopRunButtonAnimationTimer();
+        }
+    }
+
+    void ThymioVisualProgramming::exportCode() {
+        
+        if(exportButton->isEnabled()) {
+            m_app->exportProgram();
         }
     }
 

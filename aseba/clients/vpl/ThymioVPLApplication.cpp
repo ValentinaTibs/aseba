@@ -73,6 +73,15 @@ void ThymioVPLApplication::loadAndRun() {
             Qt::UniqueConnection);
 }
 
+void ThymioVPLApplication::exportProgram() {
+    if(!m_thymio)
+        return;
+    auto code = editor->toPlainText();
+    m_compilation_watcher.setRequest(m_thymio->save_aseba_code(code.toUtf8()));
+    connect(&m_compilation_watcher, &mobsya::CompilationRequestWatcher::finished, this, [this]() { m_thymio->run(); },
+            Qt::UniqueConnection);
+}
+
 void ThymioVPLApplication::stop() {
     if(!m_thymio)
         return;

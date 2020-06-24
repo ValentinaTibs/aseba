@@ -547,6 +547,18 @@ void MainWindow::tabChanged(int index) {
     findDialog->replaceGroupBox->setEnabled(currentScriptTab);
 }
 
+/* ********** 
+ * The function trigger a request of exporting the code to the TDM 
+ * the code in the editor is passed to the TDM and saved 
+ * 
+ * **********/
+void MainWindow::ExportCode() {
+
+    if(nodes->currentWidget())
+        dynamic_cast<NodeTab*>(nodes->currentWidget())->saveCodeOnTarget();
+}
+
+
 void MainWindow::showCompilationMessages(bool doShow) {
     // this slot shouldn't be callable when an unactive tab is show
     compilationMessageBox->setVisible(doShow);
@@ -770,7 +782,7 @@ void MainWindow::setupMenu() {
     fileMenu->addSeparator();
     fileMenu->addAction(QIcon(":/images/filesaveas.png"), tr("Export &memories content..."), this,
                         SLOT(exportMemoriesContent()));
-
+    fileMenu->addAction(QIcon(":/images/filesaveas.png"), tr("Export current program to binary"), this, SLOT(ExportCode())),
     fileMenu->addSeparator();
 #ifdef Q_WS_MAC
     fileMenu->addAction(QIcon(":/images/exit.png"), "quit", this, SLOT(close()), QKeySequence::Quit);

@@ -105,6 +105,7 @@ protected Q_SLOTS:
     void onScratchpadChanged(const QString& text, mobsya::fb::ProgrammingLanguage language);
     void editorContentChanged();
     void compileCodeOnTarget();
+    void saveCodeOnTarget();
 
     void showMemoryUsage(bool show);
 
