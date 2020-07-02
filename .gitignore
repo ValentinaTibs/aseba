@@ -1,4 +1,16 @@
-*~
+thymio_blockly/
+Qt/
+build_osx/
+build_xcode/
+scratch/
+third_party/catch2/cmake_install.cmake
+third_party/expected/cmake_install.cmake
+third_party/libusb/cmake_install.cmake
+third_party/qt-solutions/CMakeFiles/
+third_party/qt-solutions/CMakeScripts/
+third_party/qt-solutions/cmake_install.cmake
+third_party/spdlog/cmake_install.cmake
+thymio_blockly/*~
 *.pyc
 ._*
 .DS_Store
