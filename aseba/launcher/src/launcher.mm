@@ -79,7 +79,12 @@
         
         [b setTranslatesAutoresizingMaskIntoConstraints:NO];
         [[self shareInstance].mwebview addSubview:b];
-        [[b.topAnchor constraintEqualToAnchor: [self shareInstance].mwebview.topAnchor constant:5] setActive:YES];
+        NSString *urlNSStr = url.absoluteString;
+		if (isScratch(urlNSStr)){
+			[[b.topAnchor constraintEqualToAnchor: [self shareInstance].mwebview.topAnchor constant:5] setActive:YES];
+        } else {
+			[[b.bottomAnchor constraintEqualToAnchor: [self shareInstance].mwebview.bottomAnchor constant:-5] setActive:YES];	
+        }
         [[b.rightAnchor constraintEqualToAnchor: [self shareInstance].mwebview.rightAnchor constant:-15] setActive:YES];
         [b addTarget:self  action:@selector(closeCurrentWebView) forControlEvents:UIControlEventTouchUpInside];
       
@@ -90,6 +95,11 @@
     [[self shareInstance].mwebview loadFileURL:url allowingReadAccessToURL:pathURL];
     return [self shareInstance].mwebview;
     
+}
+
+bool isScratch(NSString *URL){
+   std::string urlStr = std::string([URL UTF8String]);
+   return urlStr.find("scratch") != std::string::npos;
 }
 
 //File Saving, via the 'blobReady' handler
@@ -105,7 +115,14 @@
         NSData* datas = [[NSData alloc] initWithBase64EncodedString:[[b64 componentsSeparatedByString:@","] lastObject] options:0];
         //First save it in the app with a real name
         // create url
-        NSURL *url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:[name stringByAppendingString:@".zip"]]];
+        NSURL *url;
+        if([name containsString:@".vpl3"]){
+            url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:[name stringByReplacingOccurrencesOfString:@".vpl3" withString:@".json"]]];
+        } else if([name containsString:@".sb3"]){
+            url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:[name stringByAppendingString:@".zip"]]];
+        } else {
+            url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:name]];
+        }
         [datas writeToURL:url atomically:NO];
         
         //Transfer it to the save dialog
