@@ -548,16 +548,34 @@ void MainWindow::tabChanged(int index) {
 }
 
 /* ********** 
- * The function trigger a request of exporting the code to the TDM 
- * the code in the editor is passed to the TDM and saved 
+ * The function triggers a request to the TDM to compile the code in the editor 
+ * after the compilation the compiledcode is sent back to the client who asked 
+ * and saved locally to the file location requested from the user 
  * 
+ * .abo extension is assigned to the file - the format is described here http://wiki.thymio.org/asebaspecifications001
  * **********/
 void MainWindow::ExportCode() {
 
+    // QString exportFileName = QFileDialog::getSaveFileName(
+    
+    // this, tr("Export current program to binary"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+    //     "Thymio Bytecode (*.abo);;All Files (*)");
+
+    // QFile file(exportFileName);
+    // if(!file.open(QFile::WriteOnly | QFile::Truncate))
+    //     return;
+
+    
     if(nodes->currentWidget())
         dynamic_cast<NodeTab*>(nodes->currentWidget())->saveCodeOnTarget();
-}
 
+    //QTextStream out(&file);
+    
+    // FILE* fp = fopen("/Users/vale/Desktop/compile_save","w+");
+    // auto data_buff = std::vector<uint16_t>(m_bytecode.begin(), m_bytecode.end());
+    // fwrite(data_buff.data(),sizeof(uint16_t),data_buff.size(),fp);
+    // fclose(fp);        
+}
 
 void MainWindow::showCompilationMessages(bool doShow) {
     // this slot shouldn't be callable when an unactive tab is show
@@ -576,7 +594,6 @@ void MainWindow::showMemoryUsage(bool show) {
     }
     ConfigDialog::setShowMemoryUsage(show);
 }
-
 
 void MainWindow::recompileAll() {
     for(auto&& tab : nodes->devicesTabs()) {

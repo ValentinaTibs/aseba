@@ -140,6 +140,26 @@ void ThymioDeviceManagerClientEndpoint::handleIncommingMessage(const fb_message_
             }
             break;
         }
+        case mobsya::fb::AnyMessage::SendBytecode: {
+            auto message = msg.as<mobsya::fb::SendBytecode>();
+            auto basic_req = get_request(message->request_id());
+            if(!basic_req)
+                break;
+            FILE* fp = fopen("/Users/vale/Desktop/SEND_BYTECODE","w+");
+            fclose(fp); 
+             
+            
+            // if(auto req = basic_req->as<Request::internal_ptr_type>()) {
+            //     req->setResult();
+            // }
+
+            // if(auto req = basic_req->as<CompilationRequest::internal_ptr_type>()) {
+            //     auto r = CompilationResult::make_error(QString(message->message()->c_str()), message->character(),
+            //                                            message->line(), message->column());
+            //     req->setResult(std::move(r));
+            // }
+            break;
+        }
         case mobsya::fb::AnyMessage::Error: {
             auto message = msg.as<mobsya::fb::Error>();
             auto basic_req = get_request(message->request_id());
@@ -342,7 +362,6 @@ void ThymioDeviceManagerClientEndpoint::handleIncommingMessage(const fb_message_
             }
             break;
         }
-
 
         default: Q_EMIT onMessage(msg);
     }

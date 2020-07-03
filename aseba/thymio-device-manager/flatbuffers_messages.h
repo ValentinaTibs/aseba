@@ -12,6 +12,13 @@ namespace mobsya {
 
 using vm_language = fb::ProgrammingLanguage;
 
+inline tagged_detached_flatbuffer create_send_bytecode_request(uint32_t request_id) {
+    flatbuffers::FlatBufferBuilder fb;
+    auto offset = mobsya::fb::CreateSendBytecode(fb, 1, 2);
+
+    return wrap_fb(fb, offset);
+}
+
 inline tagged_detached_flatbuffer create_nodes_list_request() {
     flatbuffers::FlatBufferBuilder fb;
     auto offset = mobsya::fb::CreateRequestListOfNodes(fb);

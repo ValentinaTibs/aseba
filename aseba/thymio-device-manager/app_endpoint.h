@@ -676,6 +676,14 @@ private:
         } else {
             n->compile_and_save(language, program, callback);
         }
+        
+        write_message(create_send_bytecode_request(request_id));
+        // that->write_message(create_error_response(request_id, fb::ErrorType::unknown_node));
+        
+
+        // write_message(wrap_fb(
+        //     builder,
+        //     fb::CreateThymio2WirelessDonglePairingResponse(builder, request_id, dongle.network_id, dongle.channel)));
     }
 
     void compile_and_send_program(uint32_t request_id, const aseba_node_registery::node_id& id, vm_language language,

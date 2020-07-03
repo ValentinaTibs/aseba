@@ -183,9 +183,6 @@ bool Launcher::openUrl(const QUrl& url) {
     QUrl source("qrc:/qml/webview_native.qml");
 #endif
 
- 
-
-
     auto e = new QQmlApplicationEngine(qobject_cast<QObject*>(this));
     disconnect(e, &QQmlApplicationEngine::quit, nullptr, nullptr);
     e->rootContext()->setContextProperty("Utils", qobject_cast<QObject*>(this));

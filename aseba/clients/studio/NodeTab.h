@@ -190,7 +190,6 @@ private:
 
     // TargetSubroutinesModel* vmSubroutinesModel;
 
-
     QTreeView* vmFunctionsView;
     DraggableListWidget* vmLocalEvents;
     TargetFunctionsModel vmFunctionsModel;
