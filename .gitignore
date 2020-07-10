@@ -10,6 +10,7 @@ enki/
 *.pro.user*
 ._.DS_Store
 build/
+build_osx/
 *.qmlc
 *.jsc
 .vscode/
